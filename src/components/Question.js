@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from "react";
-import { flushSync } from "react-dom";
+import {useState, useEffect, useRef } from "react";
+import {flushSync} from "react-dom";
 
-function Question({ question, totalQuestions, currentQuestion, setAnswer }) {
+function Question({question,totalQuestions,currentQuestion,setAnswer}) {
   const [selectedOption, setSelectedOption] = useState(null);
   const timer = useRef(null);
   const progressBar = useRef(null);
@@ -10,7 +10,7 @@ function Question({ question, totalQuestions, currentQuestion, setAnswer }) {
     if (timer.current) {
       clearTimeout(timer.current);
     }
-    flushSync(() => {
+    flushSync(()=>{
       setAnswer(selectedOption);
     });
     setSelectedOption(null);
@@ -23,7 +23,7 @@ function Question({ question, totalQuestions, currentQuestion, setAnswer }) {
     }, 0);
     timer.current = setTimeout(goToNextQuestion, 10 * 1000); //10 segundos
     return goToNextQuestion;
-  }, [question]);
+  },[question]);
   return (
     <div className="question">
       <div className="progress-bar" ref={progressBar}></div>
