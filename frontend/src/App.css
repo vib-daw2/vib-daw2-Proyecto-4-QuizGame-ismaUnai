@@ -1,0 +1,153 @@
+.App {
+  text-align: center;
+}
+
+/*HOME CSS*/
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  max-width: 100%;
+  background-image: url('../public/background.png'); 
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat; 
+}
+
+.content {
+  width: 40%;
+  height: 56%;
+  padding: 20px;
+  border: 2px solid #7d04ff;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.content h1 {
+  font-family: "Sedan SC", serif;
+  font-weight: 800;
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.content label {
+  display: block;
+  margin-bottom: 10px;
+  font-family: "Sedan SC", sans-serif;
+  font-size: 20px;
+  font-optical-sizing: auto;
+}
+
+.content input {
+  text-align: center;
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.button {
+  font-family: "Nunito Sans", sans-serif;
+  font-optical-sizing: auto;
+  width: 100%;
+  padding: 10px;
+  background-color: #6309bc;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 14px;
+  margin-top: 10px;
+}
+
+.button:hover {
+  background-color: #7d04ff;
+}
+
+.error-message {
+  color: red;
+  font-style: italic;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/*CREATE GAME CSS*/
+
+.create-game-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.create-game-container h1 {
+  text-align: center;
+  font-family: "Sedan SC", serif;
+  font-size: 50px;
+}
+
+.create-game-container form {
+  margin-top: 20px;
+}
+
+.create-game-container label {
+  display: flex; /* Usa flexbox */
+  align-items: center; 
+  display: block;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-family: "Nunito Sans", sans-serif;
+}
+
+.create-game-container select,
+.create-game-container input[type="text"] {
+  width: 90%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.Category {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.create-game-container span {
+  margin-right: 30px;
+}
+
+@keyframes shake {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-5px, -5px); }
+  50% { transform: translate(5px, 5px); }
+  75% { transform: translate(-5px, 5px); }
+  100% { transform: translate(0, 0); }
+}
+
+
+.create-game-container button {
+  display: center;
+  font-size: 18px;
+  width: 90%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #6309bc;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600; 
+  animation: none; /* Detiene la animación mientras el ratón está sobre el botón */
+
+}
+
+.create-game-container button:hover {
+  background-color: #7d04ff;
+  animation: shake 0.4s ease-in-out infinite; /* Aplica la animación de temblor */
+
+}
