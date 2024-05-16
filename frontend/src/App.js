@@ -4,16 +4,19 @@ import React, { useState, useEffect } from 'react';
 import Home from './home';
 import CreateGame from './CreateGame';
 import EditQuestions from './EditQuestions';
+import ReadQuestion from './CRUD/ReadQuestion'; 
 import Lobby from './Lobby';
+import WaitingRoom from './WaitingRoom';
 
-//conexion servidor
 const socket = io('http://localhost:4000');
 
 function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [showCreateGame, setShowCreateGame] = useState(false);
   const [showLobby, setShowLobby] = useState(false);
-  const [gameData, setGameData] = useState({}); // Estado para almacenar los datos de la partida
+  const [showWaitingRoom, setShowWaitingRoom] = useState(false);
+  const [showEditQuestions, setShowEditQuestions] = useState(false); // Nuevo estado para mostrar EditQuestions
+  const [gameData, setGameData] = useState({});
 
   useEffect(() => {
     socket.on('gameCreated', (newGame) => {
@@ -39,7 +42,7 @@ function App() {
 
   const handleJoinGame = (playerName, gamePIN) => {
     socket.emit('joinGame', { playerName, gamePIN });
-    console.log("Jugador se unió:", { playerName, gamePIN });
+    setShowWaitingRoom(true);
   };
 
   const handleCreateGame = () => {
@@ -49,10 +52,20 @@ function App() {
   const handleBackToHome = () => {
     setShowCreateGame(false);
     setShowLobby(false);
+    setShowWaitingRoom(false);
+    setShowEditQuestions(false); // Oculta EditQuestions al volver a Home
   };
 
   const handleShowLobby = () => {
     setShowLobby(true);
+  };
+
+  const handleEnterGame = (playerName, gamePIN) => {
+    console.log("Entrando al juego:", { playerName, gamePIN });
+  };
+
+  const handleEditQuestions = () => {
+    setShowEditQuestions(true); // Muestra EditQuestions al hacer clic en el botón
   };
 
   return (
@@ -66,10 +79,20 @@ function App() {
           players={gameData.players}
           questions={gameData.questions}
         />
+      ) : showWaitingRoom ? (
+        <WaitingRoom
+          gameName={gameData.gameName}
+          pin={gameData.PIN}
+          players={gameData.players}
+        />
+      ) : showEditQuestions ? (
+        <EditQuestions onBack={handleBackToHome} /> // Muestra EditQuestions si showEditQuestions es true
       ) : (
         <Home
           onCreateGame={handleCreateGame}
           onJoinGame={handleJoinGame}
+          onEditQuestions={handleEditQuestions}
+          onEnterGame={handleEnterGame}
         />
       )}
     </div>

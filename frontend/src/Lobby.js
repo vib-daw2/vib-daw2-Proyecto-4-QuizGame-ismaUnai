@@ -1,4 +1,3 @@
-//lobby.js
 import React from 'react';
 import { FaCopy } from 'react-icons/fa'; // Importa el ícono de copiar desde react-icons/fa
 

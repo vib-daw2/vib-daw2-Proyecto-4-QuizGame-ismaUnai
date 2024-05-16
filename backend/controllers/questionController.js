@@ -3,7 +3,6 @@ import Question from "../models/questionModel.js";
 
 const questionController = {
   //Función para guardar nueva pregunta
-  //http://localhost:4000/api/save
   save: async (req, res) => {
     try {
       const params = req.body;
@@ -33,13 +32,6 @@ const questionController = {
     try {
       const questions = await Question.find({}).sort('category');
       
-      /*if (questions.length === 0) {
-        return res.status(404).send({
-          status: 'Error',
-          question: 'No hay preguntas que mostrar'
-        });
-      }*/
-      
       res.status(200).send({
         status: 'Success',
         questions
@@ -52,6 +44,53 @@ const questionController = {
       });
     }
   },
+
+  //Función para actualizar una pregunta existente
+  updateQuestion: async (req, res) => {
+    try {
+      const { questionId } = req.params;
+      const updateParams = req.body;
+      
+      const updatedQuestion = await Question.findByIdAndUpdate(questionId, updateParams, { new: true });
+
+      if (!updatedQuestion) {
+        return res.status(404).send({
+          status: 'Error',
+          message: 'Pregunta no encontrada'
+        });
+      }
+
+      res.status(200).send({
+        status: 'Success',
+        updatedQuestion
+      });
+    } catch (error) {
+      console.error('Error al actualizar la pregunta:', error);
+      res.status(500).send({
+        status: 'Error',
+        message: 'Error al actualizar la pregunta. Por favor, inténtalo de nuevo más tarde.'
+      });
+    }
+  },
+
+  //Función para eliminar una pregunta
+  deleteQuestion: async (req, res) => {
+    try {
+      const { questionId } = req.params;
+      await Question.findByIdAndDelete(questionId);
+      res.status(200).send({
+        status: 'Success',
+        message: 'Pregunta eliminada correctamente'
+      });
+    } catch (error) {
+      console.error('Error al eliminar la pregunta:', error);
+      res.status(500).send({
+        status: 'Error',
+        message: 'Error al eliminar la pregunta. Por favor, inténtalo de nuevo más tarde.'
+      });
+    }
+  },
+  
   //Función para obtener preguntas aleatorias de las categorías especificadas
   getRandomQuestions: async (categories, numberOfQuestions) => {
     try {

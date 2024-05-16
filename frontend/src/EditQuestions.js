@@ -1,4 +1,3 @@
-// EditQuestions.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -10,6 +9,9 @@ function EditQuestions({ onBack }) {
     options: ['', '', '', ''],
     correctOptionIndex: ''
   });
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const [showQuestionDetails, setShowQuestionDetails] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false); // Estado para mostrar la confirmación de eliminación
 
   useEffect(() => {
     fetchQuestions();
@@ -35,6 +37,17 @@ function EditQuestions({ onBack }) {
     }
   };
 
+  const handleQuestionClick = (question) => {
+    setSelectedQuestion(question);
+    setShowQuestionDetails(true);
+    setFormData({
+      category: question.category,
+      title: question.title,
+      options: question.options.slice(), // Copia las opciones del objeto de pregunta
+      correctOptionIndex: question.correctOptionIndex
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -49,6 +62,18 @@ function EditQuestions({ onBack }) {
       fetchQuestions();
     } catch (error) {
       console.error('Error saving question:', error);
+    }
+  };
+
+  const handleDeleteQuestion = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:4000/api/questions/${selectedQuestion._id}`
+      );
+      setSelectedQuestion(null);
+      fetchQuestions();
+    } catch (error) {
+      console.error("Error deleting question:", error);
     }
   };
 
@@ -74,7 +99,7 @@ function EditQuestions({ onBack }) {
           <input
             type="text"
             name="title"
-            placeholder='Pregunta...'
+            placeholder="Pregunta..."
             value={formData.title}
             onChange={(e) => handleChange(e)}
           />
@@ -91,7 +116,6 @@ function EditQuestions({ onBack }) {
               onChange={(e) => handleChange(e, index)}
             />
           ))}
-
         </label>
         <label>
           Pregunta correcta (0-3):
@@ -104,15 +128,32 @@ function EditQuestions({ onBack }) {
         </label>
         <button type="submit">Save Question</button>
       </form>
-      <h2>Questions List</h2>
-      <ul>
-        {questions.map((question) => (
-          <li key={question._id}>
-            Category: {question.category}, Title: {question.title}
-          </li>
-        ))}
-      </ul>
-      <button onClick={onBack}>Back to Home</button>
+      {/* Popup para mostrar los detalles de la pregunta seleccionada */}
+      {selectedQuestion && showQuestionDetails && (
+  <div className="popup">
+    <h2>Detalles de la pregunta</h2>
+    <p>Categoría: {selectedQuestion.category}</p>
+    <p>Título: {selectedQuestion.title}</p>
+    <p>Opciones: {selectedQuestion.options.join(', ')}</p>
+    <button onClick={() => setShowQuestionDetails(false)}>Cerrar</button>
+    <button onClick={handleDeleteQuestion}>Eliminar</button> {/* Cambio aquí */}
+  </div>
+)}
+
+      <div>
+        <h1>Editar Preguntas</h1>
+        <ul>
+          {questions.map((question) => (
+            <li
+              key={question._id}
+              onClick={() => handleQuestionClick(question)}
+            >
+              Category: {question.category}, Title: {question.title}
+            </li>
+          ))}
+        </ul>
+        <button onClick={onBack}>Volver</button>
+      </div>
     </div>
   );
 }

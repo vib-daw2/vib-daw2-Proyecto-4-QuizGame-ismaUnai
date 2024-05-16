@@ -2,6 +2,7 @@
 const games = {};
 
 const gameController = {
+  games: games,
   createGame: (req, res) => {
     try {
       const { gameName, questionTime, numberOfQuestions, selectedCategories, PIN } = req.body;

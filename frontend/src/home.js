@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css'; // Importa tus estilos CSS
 
-function Home({ onCreateGame, onJoinGame, onEditQuestions }) {
+function Home({ onCreateGame, onJoinGame, onEditQuestions, onEnterGame }) {
   const [playerName, setPlayerName] = useState('');
   const [gamePIN, setGamePIN] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -13,12 +13,13 @@ function Home({ onCreateGame, onJoinGame, onEditQuestions }) {
     }
 
     onJoinGame(playerName, gamePIN);
+    onEnterGame({ playerName, gamePIN }); 
   };
 
   return (
     <div className="container">
       <div className="content">
-        <h1>Bienvenido a tu juego</h1>
+        <h1>Bienvenido a KAHOOT ANTIMOROS</h1>
         <label>
           Nombre de jugador:
           <input
