@@ -1,6 +1,9 @@
 .App {
   text-align: center;
 }
+.App h2 {
+display: none;
+}
 
 /*HOME CSS*/
 
@@ -59,7 +62,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  padding: 14px;
+  padding: 12px;
   margin-top: 10px;
 }
 
@@ -129,7 +132,6 @@
   100% { transform: translate(0, 0); }
 }
 
-
 .create-game-container button {
   display: center;
   font-size: 18px;
@@ -142,12 +144,73 @@
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600; 
-  animation: none; /* Detiene la animación mientras el ratón está sobre el botón */
-
+  animation: none;  
 }
 
 .create-game-container button:hover {
   background-color: #7d04ff;
-  animation: shake 0.4s ease-in-out infinite; /* Aplica la animación de temblor */
+  animation: shake 0.4s ease-in-out infinite; 
 
+}
+
+
+/* Lobby CSS */
+.lobby-container {
+  text-align: center;
+}
+
+.lobby-title {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.lobby-details {
+  margin-bottom: 20px;
+}
+
+.copy-button {
+  background-color: #6309bc;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.copy-button:hover {
+  background-color: #7d04ff;
+}
+
+.game-details-button {
+  background-color: #6309bc;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.game-details-button:hover {
+  background-color: #7d04ff;
+}
+
+.players-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.players-list li {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.questions-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.questions-list li {
+  font-size: 18px;
+  margin-bottom: 5px;
 }

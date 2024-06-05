@@ -1,35 +1,40 @@
-//lobby.js
 import React from 'react';
-import { FaCopy } from 'react-icons/fa'; // Importa el ícono de copiar desde react-icons/fa
+import { FaCopy } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
-function Lobby({ players, pin, questions }) {
+function Lobby({ socket, gameData  }) {
+  const navigate = useNavigate();
 
-    //COPIAR PIN AL PORTAPAPELES
-    const copyToClipboard = () => {
-        const tempTextArea = document.createElement('textarea');
-        tempTextArea.value = pin;
-        document.body.appendChild(tempTextArea);
-        tempTextArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempTextArea);
-    };
+  const copyToClipboard = () => {
+    const tempTextArea = document.createElement('textarea');
+    tempTextArea.value = gameData.PIN;
+    document.body.appendChild(tempTextArea);
+    tempTextArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempTextArea);
+  };
 
-    const printGameDetails = () => {
-      console.log('Detalles de la partida:');
-      console.log('PIN:', pin);
-      console.log('Jugadores:', players);
-      console.log('Preguntas:', questions);
+  const handleStartGame = () => {
+    socket.emit('startGame', gameData.PIN);
+    navigate(`/game`, { state: { gameData } }); // Pasar las preguntas al componente GameView
+  };
+
+  const printGameDetails = () => {
+    console.log('Detalles de la partida:');
+    console.log('PIN:', gameData.PIN);
+    console.log('Jugadores:', gameData.players[0]);
+    console.log('Preguntas:', gameData.questions);
   };
 
   return (
     <div>
-      <h1>LOBBY - {pin}</h1>
+      <h1>LOBBY - {gameData.PIN}</h1>
       <button className="copy-button" onClick={copyToClipboard}><FaCopy /></button>
-      <button onClick={printGameDetails}>Imprimir Detalles</button> {/* Botón para imprimir los detalles de la partida */}
+      <button onClick={printGameDetails}>Imprimir Detalles</button>
       <h2>Jugadores:</h2>
       <ul>
-        {players && players.length > 0 ? (
-          players.map((player, index) => (
+        {gameData.players && gameData.players.length > 0 ? (
+          gameData.players.map((player, index) => (
             <li key={index}>{player}</li>
           ))
         ) : (
@@ -38,16 +43,17 @@ function Lobby({ players, pin, questions }) {
       </ul>
       <h2>Preguntas:</h2>
       <ul>
-        {questions && questions.length > 0 ? (
-          questions.map((question, index) => (
+        {gameData.questions && gameData.questions.length > 0 ? (
+          gameData.questions.map((question, index) => (
             <li key={index}>{question.title}</li>
           ))
         ) : (
           <li>No hay preguntas disponibles</li>
         )}
       </ul>
+      <button onClick={handleStartGame}>Iniciar Partida</button>
     </div>
-  );      
+  );
 }
 
 export default Lobby;

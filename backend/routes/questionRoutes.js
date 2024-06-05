@@ -7,5 +7,7 @@ var questionRouter = express.Router();
 //definir rutas de la app
 questionRouter.post('/savequestion', questionController.save);
 questionRouter.get('/questions', questionController.getQuestions);
+questionRouter.put('/questions/:questionId', questionController.updateQuestion);
+questionRouter.delete('/questions/:questionId', questionController.deleteQuestion);
 
 export default questionRouter;

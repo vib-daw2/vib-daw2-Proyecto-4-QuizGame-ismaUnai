@@ -1,78 +1,103 @@
-import './App.css';
-import { io } from 'socket.io-client';
-import React, { useState, useEffect } from 'react';
-import Home from './home';
-import CreateGame from './CreateGame';
-import EditQuestions from './EditQuestions';
-import Lobby from './Lobby';
+import "./App.css";
+import { io } from "socket.io-client";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./home";
+import CreateGame from "./CreateGame";
+import EditQuestions from "./EditQuestions";
+import Lobby from "./Lobby";
+import WaitingRoom from "./WaitingRoom";
+import GameView from "./GameView";
+import PodiumView from "./PodiumView";
 
-//conexion servidor
-const socket = io('http://localhost:4000');
+const socket = io("http://localhost:4000");
 
 function App() {
   const [isConnected, setIsConnected] = useState(false);
-  const [showCreateGame, setShowCreateGame] = useState(false);
-  const [showLobby, setShowLobby] = useState(false);
-  const [gameData, setGameData] = useState({}); // Estado para almacenar los datos de la partida
+  const [gameState, setGameState] = useState({
+    view: "home",
+    gameData: {}
+  });
 
   useEffect(() => {
-    socket.on('gameCreated', (newGame) => {
-      setGameData(newGame);
-      setShowCreateGame(false);
-      setShowLobby(true);
+    socket.on("connect", () => setIsConnected(true));
+    socket.on("disconnect", () => setIsConnected(false));
+
+    socket.on("gameCreated", (newGame) => {
+      setGameState({
+        view: "lobby",
+        gameData: newGame
+      });
     });
 
-    socket.on('playersUpdated', (updatedPlayers) => {
-      setGameData((prevGameData) => ({
-        ...prevGameData,
-        players: updatedPlayers
+    socket.on("gameStarted", () => {
+      setGameState((prevState) => ({
+        ...prevState,
+        view: "game"
       }));
     });
 
-    socket.on('connect', () => setIsConnected(true));
+    socket.on("gameEnded", () => {
+      setGameState((prevState) => ({
+        ...prevState,
+        view: "podium"
+      }));
+    });
 
     return () => {
-      socket.off('gameCreated');
-      socket.off('playersUpdated');
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("gameCreated");
+      socket.off("gameStarted");
+      socket.off("gameEnded");
     };
   }, []);
 
   const handleJoinGame = (playerName, gamePIN) => {
-    socket.emit('joinGame', { playerName, gamePIN });
-    console.log("Jugador se unió:", { playerName, gamePIN });
+    socket.emit("joinGame", { playerName, gamePIN });
+    setGameState({
+      view: "waitingRoom",
+      gameData: { PIN: gamePIN }
+    });
   };
 
   const handleCreateGame = () => {
-    setShowCreateGame(true);
+    setGameState({
+      view: "createGame",
+      gameData: {}
+    });
   };
 
   const handleBackToHome = () => {
-    setShowCreateGame(false);
-    setShowLobby(false);
+    setGameState({
+      view: "home",
+      gameData: {}
+    });
   };
 
-  const handleShowLobby = () => {
-    setShowLobby(true);
+  const handleEditQuestions = () => {
+    setGameState({
+      view: "editQuestions",
+      gameData: {}
+    });
   };
 
   return (
-    <div className="App">
-      <h2>{isConnected ? 'Conectado' : 'No Conectado'}</h2>
-      {showCreateGame ? (
-        <CreateGame socket={socket} onBack={handleBackToHome} />
-      ) : showLobby ? (
-        <Lobby
-          pin={gameData.PIN}
-          players={gameData.players}
-          questions={gameData.questions}
-        />
-      ) : (
-        <Home
-          onCreateGame={handleCreateGame}
-          onJoinGame={handleJoinGame}
-        />
-      )}
-    </div>
+    <Router>
+      <div className="App">
+        <h2>{isConnected ? "Conectado" : "No Conectado"}</h2>
+        <Routes>
+  <Route path="/" element={<Home onCreateGame={handleCreateGame} onJoinGame={handleJoinGame} onEditQuestions={handleEditQuestions} />} />
+  <Route path="/create-game" element={<CreateGame socket={socket} onBack={handleBackToHome} />} />
+  <Route path="/edit-questions" element={<EditQuestions onBack={handleBackToHome} />} />
+<Route path="/lobby" element={<Lobby socket={socket} gameData={gameState.gameData} />} />
+  <Route path="/waitingRoom" element={<WaitingRoom socket={socket} gameData={gameState.gameData} />} />
+  <Route path="/game" element={<GameView socket={socket} gameData={gameState.gameData} />} />
+  <Route path="/podium" element={<PodiumView socket={socket} gameData={gameState.gameData} />} />
+</Routes>
+
+      </div>
+    </Router>
   );
 }
 

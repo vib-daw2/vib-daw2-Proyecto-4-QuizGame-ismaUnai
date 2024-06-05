@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './App.css'; // Importa tus estilos CSS
 
 function Home({ onCreateGame, onJoinGame, onEditQuestions }) {
   const [playerName, setPlayerName] = useState('');
   const [gamePIN, setGamePIN] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleJoinGame = () => {
     if (!playerName || !gamePIN) {
@@ -13,12 +15,23 @@ function Home({ onCreateGame, onJoinGame, onEditQuestions }) {
     }
 
     onJoinGame(playerName, gamePIN);
+    navigate(`/waitingRoom`);
+  };
+
+  const handleCreateGame = () => {
+    onCreateGame();
+    navigate('/create-game');
+  };
+
+  const handleEditQuestions = () => {
+    onEditQuestions();
+    navigate('/edit-questions');
   };
 
   return (
     <div className="container">
       <div className="content">
-        <h1>Bienvenido a tu juego</h1>
+        <h1>Bienvenido a quiz game</h1>
         <label>
           Nombre de jugador:
           <input
@@ -36,9 +49,9 @@ function Home({ onCreateGame, onJoinGame, onEditQuestions }) {
           />
         </label>
         <br></br>
-        <button className="button" onClick={onCreateGame}>Crear Partida</button>
-        <button className="button" onClick={() => handleJoinGame()}>Unirse a la partida</button>
-        <button className="button" onClick={onEditQuestions}>Administrar preguntas</button>
+        <button className="button" onClick={handleCreateGame}>Crear Partida</button>
+        <button className="button" onClick={handleJoinGame}>Unirse a la partida</button>
+        <button className="button" onClick={handleEditQuestions}>Administrar preguntas</button>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>
     </div>

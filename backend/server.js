@@ -9,10 +9,10 @@ import bodyParser from 'body-parser';
 import questionRouter from './routes/questionRoutes.js';
 import questionController from './controllers/questionController.js';
 
-let players = [];
+let games = {}; // Objeto para almacenar los juegos
 
-//conf mongoose y express
-var url = 'mongodb+srv://admin:admin@preguntas.shcqana.mongodb.net/?retryWrites=true&w=majority&appName=Preguntas';
+// Configuración de Mongoose y Express
+const url = 'mongodb+srv://admin:admin@preguntas.shcqana.mongodb.net/?retryWrites=true&w=majority&appName=Preguntas';
 mongoose.Promise = global.Promise;
 const app = express();
 const PORT = 4000;
@@ -21,9 +21,9 @@ const io = new Socketserver(server, {
     cors: {
         origin: "*"
     }
-})
+});
 
-//middlewares
+// Middlewares
 app.use(cors());
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({
@@ -31,22 +31,19 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-
-//SOCKET
+// SOCKET
 io.on('connection', (socket) => {
     console.log(socket.id);
     console.log('Se ha conectado un cliente');
 
     // Manejo del evento createGame
-    // En tu función de creación de partida
-    // En tu función de creación de partida
     socket.on('createGame', async (gameData) => {
         console.log('Partida creada:', gameData);
 
         // Aquí puedes llamar a la función para obtener preguntas aleatorias
         const selectedQuestions = await questionController.getRandomQuestions(gameData.selectedCategories, gameData.numberOfQuestions);
 
-        // Por ejemplo, podrías guardar los datos de la partida en una estructura de datos
+        // Crear un objeto de juego con los datos de la partida
         const newGame = {
             gameName: gameData.gameName,
             questionTime: gameData.questionTime,
@@ -58,27 +55,29 @@ io.on('connection', (socket) => {
         };
         console.log('PIN generado:', newGame.PIN);
 
+        // Almacena el juego utilizando su PIN como clave en el objeto de juegos
+        games[newGame.PIN] = newGame;
+
         // Emitir un evento de confirmación al cliente, incluyendo los jugadores y las preguntas
         socket.emit('gameCreated', newGame);
 
-        // También podrías emitir un evento a todos los clientes para notificarles sobre la nueva partida
+        // También puedes emitir un evento a todos los clientes para notificarles sobre la nueva partida
         io.emit('newGameCreated', newGame);
     });
 
-    
-
     // Manejo del evento joinGame
     socket.on('joinGame', ({ playerName, gamePIN }) => {
-        // Aquí puedes manejar la lógica para unirse a una partida
+        // Verificar si el juego existe
+        if (!games[gamePIN]) {
+            return socket.emit('joinGameError', { message: 'El juego no existe.' });
+        }
 
-        // Simplemente emite el evento 'playersUpdated' con la lista de jugadores actualizada
-        players.push(playerName); // Agrega al nuevo jugador a la lista
-        io.emit('playersUpdated', players); // Emite el evento con la lista actualizada
+        // Agregar al nuevo jugador a la lista de jugadores del juego
+        games[gamePIN].players.push(playerName);
+
+        // Emitir un evento 'playersUpdated' con la lista de jugadores actualizada
+        io.emit('playersUpdated', games[gamePIN].players);
     });
-
-
-
-
 
     // Función para generar un PIN aleatorio de 6 dígitos
     function generatePIN() {
@@ -96,13 +95,12 @@ io.on('connection', (socket) => {
 
 });
 
-
-//rutas
+// Rutas
 app.use('/api', questionRouter);
 
-//CONEXION BD Y ESCUCHAR APP A TRAVES DEL PORT
+// Conexión a la base de datos y escuchar la aplicación a través del puerto
 mongoose.connect(url).then(() => {
-    console.log('Conexion a la BD exitosa');
+    console.log('Conexión a la BD exitosa');
     server.listen(PORT, () => {
         console.log('Servidor corriendo en http://localhost:', PORT)
     })

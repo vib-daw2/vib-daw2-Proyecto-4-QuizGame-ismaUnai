@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+
 import "./App.css"; 
 
 function CreateGame({ socket, onBack }) {
+  const navigate = useNavigate();
   const [gameName, setGameName] = useState("");
   const [questionTime, setQuestionTime] = useState(5);
   const [numberOfQuestions, setNumberOfQuestions] = useState(5);
@@ -24,7 +27,8 @@ function CreateGame({ socket, onBack }) {
     };
     // Emitir el evento createGame con los datos de la partida al servidor
     socket.emit("createGame", gameData);
-    
+    navigate('/lobby', { state: { gameData } }); // Pasa los datos de la partida al navegar a Lobby
+
     const button = document.querySelector('.create-game-container button');
 
 button.addEventListener('mouseenter', () => {
@@ -34,6 +38,7 @@ button.addEventListener('mouseenter', () => {
 button.addEventListener('mouseleave', () => {
   button.style.animation = 'none';
 });
+
 
   };
 
