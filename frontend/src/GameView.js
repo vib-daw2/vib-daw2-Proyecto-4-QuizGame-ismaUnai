@@ -1,79 +1,91 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import "./App.css";
 
-const GameView = ({ socket, gameData }) => {
+const GameView = ({ socket }) => {
   const [question, setQuestion] = useState(null);
-  const [timer, setTimer] = useState(10); // Timer set to 10 seconds for each question
+  const [timer, setTimer] = useState(10);
   const [score, setScore] = useState(0);
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [hasAnswered, setHasAnswered] = useState(false); // Track if the user has answered the question
-  const [showAnswer, setShowAnswer] = useState(false); // Track if the correct answer should be shown
+  const [hasAnswered, setHasAnswered] = useState(false);
+  const [showAnswer, setShowAnswer] = useState(false);
   const navigate = useNavigate();
-  const { gamePIN } = useParams();
   const location = useLocation();
-  
-  const questions = location.state?.gameData.questions || [];
+  const gameData = location.state?.gameData || {};
+  const questions = gameData.questions || [];
+  const [players, setPlayers] = useState([]);
 
   useEffect(() => {
-    if (!questions.length) return;
+    console.log('Joining room with PIN:', gameData.PIN);
+    socket.emit("joinRoom", gameData.PIN);
 
-    socket.emit("joinRoom", gamePIN);
+    socket.on("playersUpdated", (updatedPlayers) => {
+      console.log('Players updated:', updatedPlayers);
+      setPlayers(updatedPlayers);
+    });
 
     socket.on("nextQuestion", (questionData) => {
+      console.log('Next question data:', questionData);
       setQuestion(questionData.question);
-      setTimer(questionData.time || 10); // Default to 10 seconds if time is not provided
+      setTimer(questionData.time || 10);
       setQuestionIndex(questionData.index);
-      setHasAnswered(false); // Reset answered state for new question
-      setShowAnswer(false); // Reset show answer state for new question
+      setHasAnswered(false);
+      setShowAnswer(false);
     });
 
     socket.on("gameEnded", () => {
-      navigate(`/podium/${gamePIN}`);
+      navigate(`/podium`, { state: { gameData } });
     });
 
     return () => {
+      socket.off("playersUpdated");
       socket.off("nextQuestion");
       socket.off("gameEnded");
     };
-  }, [gamePIN, navigate, socket, questions]);
+  }, [gameData.PIN, navigate, socket]);
 
   useEffect(() => {
     if (timer > 0) {
       const timerId = setTimeout(() => setTimer(timer - 1), 1000);
       return () => clearTimeout(timerId);
     } else {
-      // Time's up, show correct answer and move to the next question after a delay
       setShowAnswer(true);
       setTimeout(() => {
         const nextIndex = questionIndex + 1;
         if (nextIndex < questions.length) {
           setQuestionIndex(nextIndex);
-          setTimer(2); // Reset timer for next question
-          setHasAnswered(false); // Reset answered state for new question
-          setShowAnswer(false); // Reset show answer state for new question
+          setTimer(10);
+          setHasAnswered(false);
+          setShowAnswer(false);
         } else {
-          // End game if no more questions
-          socket.emit("endGame", gamePIN);
-          navigate(`/podium`); // Navigate to podium view
+          socket.emit("endGame", gameData.PIN);
+          navigate(`/podium`, { state: { gameData } });
         }
-      }, 3000); // Show the answer for 3 seconds before moving to the next question
+      }, 3000);
     }
-  }, [timer, questionIndex, questions.length, gamePIN, socket, navigate]);
+  }, [timer, questionIndex, questions.length, gameData.PIN, socket, navigate]);
 
   const handleAnswer = (selectedOption) => {
-    if (timer > 0 && !hasAnswered) { // Only handle answer if the user hasn't answered yet
+    if (timer > 0 && !hasAnswered) {
       const isCorrect = selectedOption === questions[questionIndex].correctOptionIndex;
       if (isCorrect) {
-        setScore(score + 10); // Add 10 points for correct answer
+        setScore(score + 100);
       }
       socket.emit("answerQuestion", {
-        gamePIN: gamePIN,
+        gamePIN: gameData.PIN,
         questionIndex,
         selectedOption,
-        score: score + (isCorrect ? 10 : 0),
+        score: score + (isCorrect ? 100 : 0),
       });
-      setHasAnswered(true); // Mark as answered
+      setHasAnswered(true);
     }
+  };
+
+  const printGameDetails = () => {
+    console.log("Detalles de la partida:");
+    console.log("PIN:", gameData.PIN);
+    console.log("Jugadores:", players);
+    console.log("Preguntas:", questions);
   };
 
   if (!questions.length) {
@@ -83,29 +95,41 @@ const GameView = ({ socket, gameData }) => {
   const currentQuestion = questions[questionIndex];
 
   return (
-    <div className="game-view">
-      <h1>Juego</h1>
-      <h3>{currentQuestion.title}</h3>
-      <div>Tiempo restante: {timer} segundos</div>
-      <ul>
-        {currentQuestion.options.map((option, index) => (
-          <button 
-            key={index} 
-            onClick={() => handleAnswer(index)} 
-            style={{ pointerEvents: hasAnswered ? 'none' : 'auto', opacity: hasAnswered ? 0.5 : 1 }}
-            className={showAnswer && index === currentQuestion.correctOptionIndex ? 'correct-answer' : ''}
-          >
-            {option}
-          </button>
-        ))}
-      </ul>
-      {showAnswer && (
-        <div className="correct-answer-display">
-          Respuesta correcta: {currentQuestion.options[currentQuestion.correctOptionIndex]}
-          <div>Puntuación: {score}</div>
-
-        </div>
-      )}
+    <div className="game-container">
+      <div className="game-content">
+        <h1 className="game-title">Juego</h1>
+        <button className="print-button" onClick={printGameDetails}>Imprimir Detalles</button>
+        <h3 className="question-title">{currentQuestion.title}</h3>
+        <div className="timer">Tiempo restante: {timer} segundos</div>
+        <ul className="options-list">
+          {currentQuestion.options.map((option, index) => (
+            <button
+              key={index}
+              onClick={() => handleAnswer(index)}
+              style={{
+                pointerEvents: hasAnswered ? "none" : "auto",
+                opacity: hasAnswered ? 0.5 : 1,
+              }}
+              className={`option-button ${
+                showAnswer
+                  ? index === currentQuestion.correctOptionIndex
+                    ? "correct-answer"
+                    : "incorrect-answer"
+                  : ""
+              }`}
+            >
+              {option}
+            </button>
+          ))}
+        </ul>
+        <h2 className="game-title">Jugadores:</h2>
+        {showAnswer && (
+          <div className="correct-answer-display">
+            Respuesta correcta: {currentQuestion.options[currentQuestion.correctOptionIndex]}
+            <div>Puntuación: {score}</div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

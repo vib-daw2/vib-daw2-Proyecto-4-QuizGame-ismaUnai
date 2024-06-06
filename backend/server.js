@@ -1,4 +1,3 @@
-//server.js
 import express from 'express';
 import mongoose from 'mongoose';
 import { Server as Socketserver } from 'socket.io';
@@ -77,6 +76,19 @@ io.on('connection', (socket) => {
 
         // Emitir un evento 'playersUpdated' con la lista de jugadores actualizada
         io.emit('playersUpdated', games[gamePIN].players);
+    });
+
+    // Manejo del evento startGame
+    socket.on('startGame', (pin) => {
+        console.log('Partida iniciada con PIN:', pin);
+
+        // Verificar si el juego existe
+        if (!games[pin]) {
+            return console.log('El juego no existe');
+        }
+
+        // Emitir evento gameStarted
+        io.emit('gameStarted', pin);
     });
 
     // Función para generar un PIN aleatorio de 6 dígitos

@@ -1,5 +1,20 @@
-//gamecontroller.js
+const io = require('socket.io')(server); // Asegúrate de tener el servidor socket.io configurado correctamente
+
 const games = {};
+
+const generateQuestions = (numberOfQuestions, selectedCategories) => {
+  // Aquí deberías implementar la lógica para generar o recuperar las preguntas basadas en las categorías seleccionadas
+  // Esto es solo un ejemplo de preguntas generadas estáticamente
+  const questions = [];
+  for (let i = 0; i < numberOfQuestions; i++) {
+    questions.push({
+      title: `Pregunta ${i + 1}`,
+      options: ["Opción 1", "Opción 2", "Opción 3", "Opción 4"],
+      correctOptionIndex: Math.floor(Math.random() * 4)
+    });
+  }
+  return questions;
+};
 
 const gameController = {
   games: games,
@@ -7,7 +22,6 @@ const gameController = {
     try {
       const { gameName, questionTime, numberOfQuestions, selectedCategories, PIN } = req.body;
 
-      // Validar que todos los campos requeridos estén presentes
       if (!gameName || !questionTime || !numberOfQuestions || !selectedCategories || !PIN) {
         return res.status(400).json({
           status: 'error',
@@ -15,19 +29,19 @@ const gameController = {
         });
       }
 
-      // Crear un objeto de juego con la lista de jugadores inicialmente vacía
+      const questions = generateQuestions(numberOfQuestions, selectedCategories);
+
       const game = {
         gameName,
         questionTime,
         numberOfQuestions,
         selectedCategories,
-        players: [] // Inicializa la lista de jugadores vacía
+        questions, // Añadimos las preguntas aquí
+        players: []
       };
 
-      // Almacena el juego utilizando su PIN como clave en el objeto de estado del juego
       games[PIN] = game;
-      
-      // Enviar respuesta con el juego creado
+
       res.status(200).json({
         status: 'success',
         game
@@ -45,7 +59,6 @@ const gameController = {
     try {
       const { playerName, PIN } = req.body;
 
-      // Verificar si el juego existe
       if (!games[PIN]) {
         return res.status(404).json({
           status: 'error',
@@ -53,25 +66,51 @@ const gameController = {
         });
       }
 
-      // Obtener la lista de jugadores actual del juego
       const currentPlayers = games[PIN].players;
-
-      // Agregar al nuevo jugador a la lista de jugadores
       currentPlayers.push(playerName);
 
-      // Enviar respuesta con la lista de jugadores actualizada
       res.status(200).json({
         status: 'success',
         players: currentPlayers
       });
 
-      // Emitir un evento a todos los clientes en esta partida para que actualicen la lista de jugadores
       io.in(PIN).emit('playersUpdated', currentPlayers);
     } catch (error) {
       console.error('Error al unirse al juego:', error);
       res.status(500).json({
         status: 'error',
         message: 'No ha sido posible unirse al juego.'
+      });
+    }
+  },
+
+  startGame: (req, res) => {
+    try {
+      const { PIN } = req.body;
+
+      if (!games[PIN]) {
+        return res.status(404).json({
+          status: 'error',
+          message: 'El juego no existe.'
+        });
+      }
+
+      const game = games[PIN];
+
+      io.in(PIN).emit('gameStarted', {
+        questions: game.questions,
+        questionTime: game.questionTime
+      });
+
+      res.status(200).json({
+        status: 'success',
+        message: 'El juego ha comenzado.'
+      });
+    } catch (error) {
+      console.error('Error al iniciar el juego:', error);
+      res.status(500).json({
+        status: 'error',
+        message: 'No ha sido posible iniciar el juego.'
       });
     }
   }

@@ -44,6 +44,7 @@ button.addEventListener('mouseleave', () => {
 
   return (
     <div className="create-game-container">
+    <div className="content2">
       <h1>Configurar Partida</h1>
       <form onSubmit={handleSubmit}>
         <label>
@@ -80,7 +81,7 @@ button.addEventListener('mouseleave', () => {
           </select>
         </label>
         <label>
-           <p className="Category">Categorías :</p>
+          <p className="Category">Categorías :</p>
           <div>
             <span>Deportes</span>
             <input
@@ -114,12 +115,12 @@ button.addEventListener('mouseleave', () => {
             />
           </div>
         </label>
-        
         <button type="submit">Guardar Configuración</button>
       </form>
       <button onClick={onBack}>Volver a Inicio</button>
     </div>
-  );
+  </div>
+);
 }
 
 

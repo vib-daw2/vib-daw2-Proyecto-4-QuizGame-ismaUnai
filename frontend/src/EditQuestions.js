@@ -1,23 +1,19 @@
-//EditQuestions.js
+// editquestions.js
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import UpdateQuestion from './CRUD/UpdateQuestion.js'; // Asegúrate de importar UpdateQuestion correctamente
-import DeleteQuestion from './CRUD/DeleteQuestion.js'; // Asegúrate de importar DeleteQuestion correctamente
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate
+import UpdateQuestion from './CRUD/UpdateQuestion';
+import DeleteQuestion from './CRUD/DeleteQuestion';
+import CreateQuestion from './CRUD/CreateQuestion';
+import './App.css';
 
 function EditQuestions({ onBack }) {
   const [questions, setQuestions] = useState([]);
-  const [formData, setFormData] = useState({
-    category: '',
-    title: '',
-    options: ['', '', '', ''],
-    correctOptionIndex: ''
-  });
   const [selectedQuestion, setSelectedQuestion] = useState(null);
-  const [showQuestionDetails, setShowQuestionDetails] = useState(false);
-  const [showUpdateForm, setShowUpdateForm] = useState(false); // Asegúrate de definir showUpdateForm
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false); // Definir showDeleteConfirmation
-  const navigate = useNavigate(); // Usa useNavigate para redireccionar
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState('Deportes');
 
   useEffect(() => {
     fetchQuestions();
@@ -32,165 +28,126 @@ function EditQuestions({ onBack }) {
     }
   };
 
-  const handleChange = (e, index) => {
-    const { name, value } = e.target;
-    if (name === 'options') {
-      const updatedOptions = [...formData.options];
-      updatedOptions[index] = value;
-      setFormData({ ...formData, options: updatedOptions });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-  };
-
-  const handleQuestionClick = (question) => {
-    setSelectedQuestion(question);
-    setShowQuestionDetails(true);
-    setShowUpdateForm(false); // Reset showUpdateForm when clicking a question
-    setFormData({
-      category: question.category,
-      title: question.title,
-      options: question.options.slice(),
-      correctOptionIndex: question.correctOptionIndex
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:4000/api/savequestion', formData);
-      console.log('Question saved:', response.data);
-      setFormData({
-        category: '',
-        title: '',
-        options: ['', '', '', ''],
-        correctOptionIndex: ''
-      });
-      fetchQuestions();
-    } catch (error) {
-      console.error('Error saving question:', error);
-    }
-  };
-
   const handleUpdateQuestion = async (updatedQuestion) => {
     try {
-      const response = await axios.put(`http://localhost:4000/api/questions/${selectedQuestion._id}`, updatedQuestion);
-      console.log('Question updated:', response.data);
-      setSelectedQuestion(null);
+      await axios.put(`http://localhost:4000/api/questions/${updatedQuestion._id}`, updatedQuestion);
+      await fetchQuestions();
       setShowUpdateForm(false);
-      setShowQuestionDetails(false); // Reset showQuestionDetails after update
-      fetchQuestions();
+      setSelectedQuestion(null);
     } catch (error) {
       console.error('Error updating question:', error);
     }
   };
 
-  const handleDeleteQuestion = async () => {
+  const handleDeleteQuestion = async (questionId) => {
     try {
-      await axios.delete(`http://localhost:4000/api/questions/${selectedQuestion._id}`);
-      setSelectedQuestion(null);
+      await axios.delete(`http://localhost:4000/api/questions/${questionId}`);
+      setQuestions(questions.filter(q => q._id !== questionId));
       setShowDeleteConfirmation(false);
-      setShowQuestionDetails(false); // Reset showQuestionDetails after delete
-      fetchQuestions();
+      setSelectedQuestion(null);
     } catch (error) {
       console.error('Error deleting question:', error);
     }
   };
 
-  const handleBack = () => {
-    navigate('/'); // Redirige al usuario a la página de inicio (/home)
+  const handleCreateQuestion = async (newQuestion) => {
+    try {
+      await axios.post('http://localhost:4000/api/savequestion', newQuestion);
+      await fetchQuestions(); // Refrescar la lista de preguntas después de crear una nueva
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error('Error creating question:', error);
+    }
   };
+
+  const handleQuestionClick = (question) => {
+    setSelectedQuestion(question);
+    setShowUpdateForm(true);
+    setShowDeleteConfirmation(false);
+  };
+
+  const handleDeleteClick = (questionId) => {
+    setSelectedQuestion(questions.find(q => q._id === questionId));
+    setShowDeleteConfirmation(true);
+    setShowUpdateForm(false);
+  };
+
+  const renderTable = (category) => (
+    <table className="questions-table">
+      <thead>
+        <tr>
+          <th>Categoría</th>
+          <th>Título</th>
+          <th>Opciones</th>
+          <th>Respuesta Correcta</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {questions
+          .filter(question => question && question.category === category)
+          .map((question) => (
+            question && (
+              <React.Fragment key={question._id}>
+                <tr>
+                  <td>{question.category}</td>
+                  <td>{question.title}</td>
+                  <td>{question.options.join(', ')}</td>
+                  <td>{question.options[question.correctOptionIndex]}</td>
+                  <td>
+                    <button onClick={() => handleQuestionClick(question)}>Editar</button>
+                    <button onClick={() => handleDeleteClick(question._id)}>Eliminar</button>
+                  </td>
+                </tr>
+                {showUpdateForm && selectedQuestion && selectedQuestion._id === question._id && (
+                  <tr>
+                    <td colSpan="5">
+                      <UpdateQuestion
+                        question={selectedQuestion}
+                        onUpdate={handleUpdateQuestion}
+                        onCancel={() => setShowUpdateForm(false)}
+                      />
+                    </td>
+                  </tr>
+                )}
+                {showDeleteConfirmation && selectedQuestion && selectedQuestion._id === question._id && (
+                  <tr>
+                    <td colSpan="5">
+                      <DeleteQuestion
+                        questionId={selectedQuestion._id}
+                        onDelete={handleDeleteQuestion}
+                        onCancel={() => setShowDeleteConfirmation(false)}
+                      />
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            )
+          ))}
+      </tbody>
+    </table>
+  );
 
   return (
     <div>
-      <h1>Crear Pregunta</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Categoría:
-          <select
-            name="category"
-            value={formData.category}
-            onChange={(e) => handleChange(e)}
-          >
-            <option value="Deportes">Deportes</option>
-            <option value="Música">Música</option>
-            <option value="Geografía">Geografía</option>
-            <option value="Entretenimiento">Entretenimiento</option>
-          </select>
-        </label>
-        <label>
-          Pregunta:
-          <input
-            type="text"
-            name="title"
-            placeholder="Pregunta..."
-            value={formData.title}
-            onChange={(e) => handleChange(e)}
-          />
-        </label>
-        <label>
-          Opciones:
-          {formData.options.map((option, index) => (
-            <input
-              key={index}
-              type="text"
-              name="options"
-              placeholder={`Opción ${index}`}
-              value={option}
-              onChange={(e) => handleChange(e, index)}
-            />
-          ))}
-        </label>
-        <label>
-          Pregunta correcta (0-3):
-          <input
-            type="text"
-            name="correctOptionIndex"
-            value={formData.correctOptionIndex}
-            onChange={(e) => handleChange(e)}
-          />
-        </label>
-        <button type="submit">Save Question</button>
-      </form>
-      {selectedQuestion && showQuestionDetails && (
-        <div className="popup">
-          <h2>Detalles de la pregunta</h2>
-          <p>Categoría: {selectedQuestion.category}</p>
-          <p>Título: {selectedQuestion.title}</p>
-          <p>Opciones: {selectedQuestion.options.join(', ')}</p>
-          <button onClick={() => setShowQuestionDetails(false)}>Cerrar</button>
-          <button onClick={() => setShowUpdateForm(true)}>Editar</button>
-          <button onClick={() => setShowDeleteConfirmation(true)}>Eliminar</button>
-        </div>
-      )}
-      {selectedQuestion && showUpdateForm && (
-        <UpdateQuestion
-          question={selectedQuestion}
-          onUpdate={handleUpdateQuestion}
-          onCancel={() => setShowUpdateForm(false)}
+      <h1>Editar Preguntas</h1>
+      <button onClick={() => setShowCreateForm(true)}>Crear Pregunta</button>
+      {showCreateForm && (
+        <CreateQuestion
+          onCreate={handleCreateQuestion}
+          onCancel={() => setShowCreateForm(false)}
         />
       )}
-      {selectedQuestion && showDeleteConfirmation && (
-        <DeleteQuestion
-          questionId={selectedQuestion._id}
-          onDelete={handleDeleteQuestion}
-          onCancel={() => setShowDeleteConfirmation(false)}
-        />
-      )}
-      <div>
-        <h1>Editar Preguntas</h1>
-        <ul>
-          {questions.map((question) => (
-            <li
-              key={question._id}
-              onClick={() => handleQuestionClick(question)}
-            >
-              Category: {question.category}, Title: {question.title}
-            </li>
-          ))}
-        </ul>
-        <button onClick={handleBack}>Volver</button>
+      <div className="category-buttons">
+        <button onClick={() => setCurrentCategory('Deportes')}>Deportes</button>
+        <button onClick={() => setCurrentCategory('Entretenimiento')}>Entretenimiento</button>
+        <button onClick={() => setCurrentCategory('Geografía')}>Geografía</button>
+        <button onClick={() => setCurrentCategory('Música')}>Música</button>
       </div>
+      <div className="category-table">
+        {renderTable(currentCategory)}
+      </div>
+      <button onClick={onBack}>Volver</button>
     </div>
   );
 }

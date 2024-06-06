@@ -1,78 +1,75 @@
-//UpdateQuestion.js
+// UpdateQuestion.js
 import React, { useState } from 'react';
+import axios from 'axios';
 
-function UpdateQuestion({ question, onUpdate, onCancel }) {
-  const [updatedQuestion, setUpdatedQuestion] = useState({
-    category: question.category,
-    title: question.title,
-    options: question.options.slice(),
-    correctOptionIndex: question.correctOptionIndex,
-  });
+const UpdateQuestion = ({ question, onUpdate, onCancel }) => {
+  const initialFormData = {
+    category: question?.category || '',
+    title: question?.title || '',
+    options: question?.options || [],
+    correctOptionIndex: question?.correctOptionIndex?.toString() || ''
+  };
 
-  const handleChange = (e, index) => {
+  const [formData, setFormData] = useState(initialFormData);
+
+  const handleChange = (e, index = null) => {
     const { name, value } = e.target;
-    if (name === 'options') {
-      const updatedOptions = [...updatedQuestion.options];
+    if (name === 'options' && index !== null) {
+      const updatedOptions = [...formData.options];
       updatedOptions[index] = value;
-      setUpdatedQuestion({ ...updatedQuestion, options: updatedOptions });
+      setFormData({ ...formData, options: updatedOptions });
     } else {
-      setUpdatedQuestion({ ...updatedQuestion, [name]: value });
+      setFormData({ ...formData, [name]: value });
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onUpdate(updatedQuestion);
+    try {
+      const index = parseInt(formData.correctOptionIndex);
+      if (!isNaN(index)) {
+        await axios.put(`http://localhost:4000/api/questions/${question._id}`, formData);
+        onUpdate({ ...question, ...formData });
+      } else {
+        console.error('El índice de la respuesta correcta debe ser un número.');
+      }
+    } catch (error) {
+      console.error('Error updating question:', error);
+    }
   };
 
   return (
-    <div className="popup">
-      <h2>Actualizar Pregunta</h2>
-      <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
+      <div>
         <label>
           Categoría:
-          <input
-            type="text"
-            name="category"
-            value={updatedQuestion.category}
-            onChange={(e) => handleChange(e)}
-          />
+          <input type="text" name="category" value={formData.category} onChange={handleChange} />
         </label>
+      </div>
+      <div>
         <label>
           Título:
-          <input
-            type="text"
-            name="title"
-            value={updatedQuestion.title}
-            onChange={(e) => handleChange(e)}
-          />
+          <input type="text" name="title" value={formData.title} onChange={handleChange} />
         </label>
+      </div>
+      {formData.options.map((option, index) => (
+        <div key={index}>
+          <label>
+            Opción {index + 1}:
+            <input type="text" name="options" value={option} onChange={(e) => handleChange(e, index)} />
+          </label>
+        </div>
+      ))}
+      <div>
         <label>
-          Opciones:
-          {updatedQuestion.options.map((option, index) => (
-            <input
-              key={index}
-              type="text"
-              name="options"
-              value={option}
-              onChange={(e) => handleChange(e, index)}
-            />
-          ))}
+          Respuesta correcta (0-3):
+          <input type="text" name="correctOptionIndex" value={formData.correctOptionIndex} onChange={handleChange} />
         </label>
-        <label>
-          Pregunta correcta (0-3):
-          <input
-            type="text"
-            name="correctOptionIndex"
-            value={updatedQuestion.correctOptionIndex}
-            onChange={(e) => handleChange(e)}
-          />
-        </label>
-        <button type="submit">Actualizar</button>
-      </form>
-      <button onClick={onCancel}>Cancelar</button>
-    </div>
+      </div>
+      <button type="submit">Guardar</button>
+      <button type="button" onClick={onCancel}>Cancelar</button>
+    </form>
   );
-}
+};
 
 export default UpdateQuestion;

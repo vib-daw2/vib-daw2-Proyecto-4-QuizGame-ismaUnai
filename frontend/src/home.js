@@ -31,7 +31,7 @@ function Home({ onCreateGame, onJoinGame, onEditQuestions }) {
   return (
     <div className="container">
       <div className="content">
-        <h1>Bienvenido a quiz game</h1>
+        <h1>Bienvenido Hoodgame</h1>
         <label>
           Nombre de jugador:
           <input
