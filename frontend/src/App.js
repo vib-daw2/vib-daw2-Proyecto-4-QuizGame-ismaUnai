@@ -87,15 +87,14 @@ function App() {
       <div className="App">
         <h2>{isConnected ? "Conectado" : "No Conectado"}</h2>
         <Routes>
-  <Route path="/" element={<Home onCreateGame={handleCreateGame} onJoinGame={handleJoinGame} onEditQuestions={handleEditQuestions} />} />
-  <Route path="/create-game" element={<CreateGame socket={socket} onBack={handleBackToHome} />} />
-  <Route path="/edit-questions" element={<EditQuestions onBack={handleBackToHome} />} />
-<Route path="/lobby" element={<Lobby socket={socket} gameData={gameState.gameData} />} />
-  <Route path="/waitingRoom" element={<WaitingRoom socket={socket} gameData={gameState.gameData} />} />
-  <Route path="/game" element={<GameView socket={socket} gameData={gameState.gameData} />} />
-  <Route path="/podium" element={<PodiumView socket={socket} gameData={gameState.gameData} />} />
-</Routes>
-
+          <Route path="/" element={<Home onCreateGame={handleCreateGame} onJoinGame={handleJoinGame} onEditQuestions={handleEditQuestions} />} />
+          <Route path="/create-game" element={<CreateGame socket={socket} onBack={handleBackToHome} />} />
+          <Route path="/edit-questions" element={<EditQuestions onBack={handleBackToHome} />} />
+          <Route path="/lobby" element={<Lobby socket={socket} gameData={gameState.gameData} />} />
+          <Route path="/waitingRoom" element={<WaitingRoom socket={socket} gameData={gameState.gameData} />} />
+          <Route path="/game" element={<GameView socket={socket} gameData={gameState.gameData} />} />
+          <Route path="/podium" element={<PodiumView socket={socket} gameData={gameState.gameData} />} />
+        </Routes>
       </div>
     </Router>
   );

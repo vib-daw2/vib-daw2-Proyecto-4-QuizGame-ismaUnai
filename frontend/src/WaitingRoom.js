@@ -14,7 +14,8 @@ const WaitingRoom = ({ socket, gameData }) => {
     });
 
     socket.on('gameStarted', () => {
-      navigate(`/game`);
+      socket.emit('startGame', gameData.PIN);
+      navigate(`/game`, { state: { gameData } }); // Pass gameData to GameView
     });
 
     return () => {
@@ -23,19 +24,14 @@ const WaitingRoom = ({ socket, gameData }) => {
     };
   }, [gamePIN, navigate, socket]);
 
-  const startGame = () => {
-    socket.emit('startGame', gamePIN);
-  };
-
   return (
     <div className="waiting-room">
       <h3>Esperando a que el administrador inicie la partida...</h3>
       <ul>
         {players.map((player, index) => (
-          <li key={index}>{player.name}</li>
+          <li key={index}>{player}</li>
         ))}
       </ul>
-      {gameData.isAdmin && <button onClick={startGame}>Iniciar Juego</button>}
     </div>
   );
 };
