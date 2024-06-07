@@ -1,6 +1,8 @@
 // editquestions.js
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
 import UpdateQuestion from './CRUD/UpdateQuestion';
 import DeleteQuestion from './CRUD/DeleteQuestion';
@@ -14,6 +16,7 @@ function EditQuestions({ onBack }) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [currentCategory, setCurrentCategory] = useState('Deportes');
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchQuestions();
@@ -128,6 +131,10 @@ function EditQuestions({ onBack }) {
     </table>
   );
 
+  const handleBack = () => {
+    navigate('/');
+  };
+
   return (
     <div>
       <h1>Editar Preguntas</h1>
@@ -147,7 +154,7 @@ function EditQuestions({ onBack }) {
       <div className="category-table">
         {renderTable(currentCategory)}
       </div>
-      <button onClick={onBack}>Volver</button>
+      <button onClick={handleBack}>Volver a Inicio</button>
     </div>
   );
 }

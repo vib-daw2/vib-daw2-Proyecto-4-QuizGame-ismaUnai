@@ -19,6 +19,12 @@ function Home({ onCreateGame, onJoinGame, onEditQuestions }) {
   };
 
   const handleCreateGame = () => {
+
+    if (!playerName) {
+      setErrorMessage('Por favor, introduce un nombre de jugador.');
+      return;
+    }
+    
     onCreateGame();
     navigate('/create-game');
   };

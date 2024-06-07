@@ -9,25 +9,30 @@ const GameView = ({ socket }) => {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [hasAnswered, setHasAnswered] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const gameData = location.state?.gameData || {};
-  const questions = gameData.questions || [];
-  const [players, setPlayers] = useState([]);
+  const gameData = location.state?.gameData;
+  const questions = gameData?.questions || [];
+  const questionTime = gameData?.questionTime;
 
   useEffect(() => {
-    console.log('Joining room with PIN:', gameData.PIN);
+    if (!gameData || !gameData.PIN) {
+      setError(true);
+      return;
+    }
+
     socket.emit("joinRoom", gameData.PIN);
 
-    socket.on("playersUpdated", (updatedPlayers) => {
-      console.log('Players updated:', updatedPlayers);
-      setPlayers(updatedPlayers);
+    socket.on("gameStart", ( gameStartData) => {
+      setQuestionIndex(0);
+      setQuestion(questions[0]);
+      setTimer(gameStartData.questionTime);
     });
 
     socket.on("nextQuestion", (questionData) => {
-      console.log('Next question data:', questionData);
       setQuestion(questionData.question);
-      setTimer(questionData.time || 10);
+      setTimer(questionData.time || questionTime);
       setQuestionIndex(questionData.index);
       setHasAnswered(false);
       setShowAnswer(false);
@@ -38,11 +43,10 @@ const GameView = ({ socket }) => {
     });
 
     return () => {
-      socket.off("playersUpdated");
       socket.off("nextQuestion");
       socket.off("gameEnded");
     };
-  }, [gameData.PIN, navigate, socket]);
+  }, [gameData, questions, questionTime, socket, navigate]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -54,7 +58,8 @@ const GameView = ({ socket }) => {
         const nextIndex = questionIndex + 1;
         if (nextIndex < questions.length) {
           setQuestionIndex(nextIndex);
-          setTimer(10);
+          setQuestion(questions[nextIndex]);
+          setTimer(questionTime);
           setHasAnswered(false);
           setShowAnswer(false);
         } else {
@@ -63,30 +68,47 @@ const GameView = ({ socket }) => {
         }
       }, 3000);
     }
-  }, [timer, questionIndex, questions.length, gameData.PIN, socket, navigate]);
+  }, [
+    timer,
+    questionIndex,
+    questions,
+    questionTime,
+    socket,
+    gameData,
+    navigate,
+  ]);
 
   const handleAnswer = (selectedOption) => {
     if (timer > 0 && !hasAnswered) {
-      const isCorrect = selectedOption === questions[questionIndex].correctOptionIndex;
-      if (isCorrect) {
-        setScore(score + 100);
+      const timeRemaining = timer;
+      const currentQuestion = questions[questionIndex];
+      if (currentQuestion) {
+        const isCorrect = selectedOption === currentQuestion.correctOptionIndex;
+        let points = 0;
+        if (isCorrect) {
+          points = timeRemaining < 1 ? 500 : Math.max(0, 500 - (10 - timeRemaining) * 47);
+          setScore(score + points);
+        }
+        socket.emit("answerQuestion", {
+          gamePIN: gameData.PIN,
+          questionIndex,
+          selectedOption,
+          score: score + (isCorrect ? points : 0),
+          timeRemaining,
+        });
+        setHasAnswered(true);
       }
-      socket.emit("answerQuestion", {
-        gamePIN: gameData.PIN,
-        questionIndex,
-        selectedOption,
-        score: score + (isCorrect ? 100 : 0),
-      });
-      setHasAnswered(true);
     }
   };
+  
 
-  const printGameDetails = () => {
-    console.log("Detalles de la partida:");
-    console.log("PIN:", gameData.PIN);
-    console.log("Jugadores:", players);
-    console.log("Preguntas:", questions);
-  };
+  if (error) {
+    return (
+      <div className="error-container">
+        <h3 className="error-message">No se pudieron cargar los datos del juego. Por favor, inténtalo de nuevo.</h3>
+      </div>
+    );
+  }
 
   if (!questions.length) {
     return <div>Loading...</div>;
@@ -98,7 +120,6 @@ const GameView = ({ socket }) => {
     <div className="game-container">
       <div className="game-content">
         <h1 className="game-title">Juego</h1>
-        <button className="print-button" onClick={printGameDetails}>Imprimir Detalles</button>
         <h3 className="question-title">{currentQuestion.title}</h3>
         <div className="timer">Tiempo restante: {timer} segundos</div>
         <ul className="options-list">
@@ -122,10 +143,10 @@ const GameView = ({ socket }) => {
             </button>
           ))}
         </ul>
-        <h2 className="game-title">Jugadores:</h2>
         {showAnswer && (
           <div className="correct-answer-display">
-            Respuesta correcta: {currentQuestion.options[currentQuestion.correctOptionIndex]}
+            Respuesta correcta:{" "}
+            {currentQuestion.options[currentQuestion.correctOptionIndex]}
             <div>Puntuación: {score}</div>
           </div>
         )}
