@@ -24,25 +24,25 @@ function Lobby({ socket, gameData }) {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(gameData.PIN).then(() => {
-      alert('PIN copiado al portapapeles');
+      alert('PIN copy successfully');
     }).catch((err) => {
-      console.error('Error al copiar el PIN: ', err);
+      console.error('Error to copy PIN: ', err);
     });
   };
 
   const handleStartGame = () => {
     console.log("gameData:", gameData);
-    console.log('Jugadores:', players);
+    console.log('Players:', players);
 
     socket.emit('startGame', gameData.PIN);
     navigate(`/game`, { state: { gameData } }); // Pass gameData to GameView
   };
 
   const printGameDetails = () => {
-    console.log('Detalles de la partida:');
+    console.log('Game details:');
     console.log('PIN:', gameData.PIN);
-    console.log('Jugadores:', players);
-    console.log('Preguntas:', gameData.questions);
+    console.log('Players::', players);
+    console.log('Questions:', gameData.questions);
   };
 
   return (
@@ -51,16 +51,16 @@ function Lobby({ socket, gameData }) {
         <h1 className="lobby-title">LOBBY - {gameData.PIN}</h1>
         <div className="lobby-details">
           <button className="copy-button" onClick={copyToClipboard}><FaCopy /></button>
-          <button className="game-details-button" onClick={printGameDetails}>Imprimir Detalles</button>
+          <button className="game-details-button" onClick={printGameDetails}>Copy details</button>
         </div>
-        <h2>Jugadores:</h2>
+        <h2>Players:</h2>
         <ul className="players-list">
           {players.length > 0 ? (
             players.map((player, index) => (
               <li key={index}>{player}</li>
             ))
           ) : (
-            <li>No hay jugadores en el lobby</li>
+            <li>There is no players in lobby</li>
           )}
         </ul>
         <h2>Preguntas:</h2>
@@ -70,10 +70,10 @@ function Lobby({ socket, gameData }) {
               <li key={index}>{question.title}</li>
             ))
           ) : (
-            <li>No hay preguntas disponibles</li>
+            <li>There is no questions avaible</li>
           )}
         </ul>
-        <button className="start-button" onClick={handleStartGame}>Iniciar Partida</button>
+        <button className="start-button" onClick={handleStartGame}>Start game</button>
       </div>
     </div>
   );

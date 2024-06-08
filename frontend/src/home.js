@@ -10,7 +10,7 @@ function Home({ onCreateGame, onJoinGame, onEditQuestions }) {
 
   const handleJoinGame = () => {
     if (!playerName || !gamePIN) {
-      setErrorMessage('Por favor, completa todos los campos.');
+      setErrorMessage('Please complete all the fields.');
       return;
     }
 
@@ -21,7 +21,7 @@ function Home({ onCreateGame, onJoinGame, onEditQuestions }) {
   const handleCreateGame = () => {
 
     if (!playerName) {
-      setErrorMessage('Por favor, introduce un nombre de jugador.');
+      setErrorMessage('Please introduce a player name.');
       return;
     }
     
@@ -37,9 +37,9 @@ function Home({ onCreateGame, onJoinGame, onEditQuestions }) {
   return (
     <div className="container">
       <div className="content">
-        <h1>Bienvenido Hoodgame</h1>
+        <h1>WELCOME Hoodgame</h1>
         <label>
-          Nombre de jugador:
+          PLAYER NAME:
           <input
             type="text"
             value={playerName}
@@ -47,7 +47,7 @@ function Home({ onCreateGame, onJoinGame, onEditQuestions }) {
           />
         </label>
         <label>
-          PIN del juego:
+          PIN GAME:
           <input
             type="text"
             value={gamePIN}
@@ -55,9 +55,9 @@ function Home({ onCreateGame, onJoinGame, onEditQuestions }) {
           />
         </label>
         <br></br>
-        <button className="button" onClick={handleCreateGame}>Crear Partida</button>
-        <button className="button" onClick={handleJoinGame}>Unirse a la partida</button>
-        <button className="button" onClick={handleEditQuestions}>Administrar preguntas</button>
+        <button className="button" onClick={handleCreateGame}>Create a party</button>
+        <button className="button" onClick={handleJoinGame}>Join a party</button>
+        <button className="button" onClick={handleEditQuestions}>Questions adminsitrations</button>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>
     </div>

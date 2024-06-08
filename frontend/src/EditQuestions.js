@@ -79,11 +79,11 @@ function EditQuestions({ onBack }) {
     <table className="questions-table">
       <thead>
         <tr>
-          <th>Categoría</th>
-          <th>Título</th>
-          <th>Opciones</th>
-          <th>Respuesta Correcta</th>
-          <th>Acciones</th>
+          <th>Category</th>
+          <th>Title</th>
+          <th>Options</th>
+          <th>Corret Answer</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -98,8 +98,8 @@ function EditQuestions({ onBack }) {
                   <td>{question.options.join(', ')}</td>
                   <td>{question.options[question.correctOptionIndex]}</td>
                   <td>
-                    <button onClick={() => handleQuestionClick(question)}>Editar</button>
-                    <button onClick={() => handleDeleteClick(question._id)}>Eliminar</button>
+                    <button onClick={() => handleQuestionClick(question)}>Edit</button>
+                    <button onClick={() => handleDeleteClick(question._id)}>Delete</button>
                   </td>
                 </tr>
                 {showUpdateForm && selectedQuestion && selectedQuestion._id === question._id && (
@@ -137,8 +137,8 @@ function EditQuestions({ onBack }) {
 
   return (
     <div>
-      <h1>Editar Preguntas</h1>
-      <button onClick={() => setShowCreateForm(true)}>Crear Pregunta</button>
+      <h1>Edit Questions</h1>
+      <button onClick={() => setShowCreateForm(true)}>Create Questions</button>
       {showCreateForm && (
         <CreateQuestion
           onCreate={handleCreateQuestion}
@@ -146,15 +146,15 @@ function EditQuestions({ onBack }) {
         />
       )}
       <div className="category-buttons">
-        <button onClick={() => setCurrentCategory('Deportes')}>Deportes</button>
-        <button onClick={() => setCurrentCategory('Entretenimiento')}>Entretenimiento</button>
-        <button onClick={() => setCurrentCategory('Geografía')}>Geografía</button>
-        <button onClick={() => setCurrentCategory('Música')}>Música</button>
+        <button onClick={() => setCurrentCategory('Deportes')}>Sports</button>
+        <button onClick={() => setCurrentCategory('Entretenimiento')}>entertainment</button>
+        <button onClick={() => setCurrentCategory('Geografía')}>Geografy</button>
+        <button onClick={() => setCurrentCategory('Música')}>Music</button>
       </div>
       <div className="category-table">
         {renderTable(currentCategory)}
       </div>
-      <button onClick={handleBack}>Volver a Inicio</button>
+      <button onClick={handleBack}>Go home</button>
     </div>
   );
 }

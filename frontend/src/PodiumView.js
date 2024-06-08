@@ -25,7 +25,7 @@ const PodiumView = ({ socket }) => {
   return (
     <div className="podium-container">
       <div className="podium-content">
-        <h1 className="podium-title">Podio</h1>
+        <h1 className="podium-title">Podium</h1>
         <ul className="podium-list">
           {podiumData.map((player, index) => (
             <li key={index}>

@@ -85,7 +85,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h2>{isConnected ? "Conectado" : "No Conectado"}</h2>
+        <h2>{isConnected ? "Conected" : "No Conected"}</h2>
         <Routes>
           <Route path="/" element={<Home onCreateGame={handleCreateGame} onJoinGame={handleJoinGame} onEditQuestions={handleEditQuestions} />} />
           <Route path="/create-game" element={<CreateGame socket={socket} onBack={handleBackToHome} />} />

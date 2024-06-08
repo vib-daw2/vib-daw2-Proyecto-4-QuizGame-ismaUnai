@@ -105,7 +105,7 @@ const GameView = ({ socket }) => {
   if (error) {
     return (
       <div className="error-container">
-        <h3 className="error-message">No se pudieron cargar los datos del juego. Por favor, inténtalo de nuevo.</h3>
+        <h3 className="error-message">Game data could not be loaded. Please try again.</h3>
       </div>
     );
   }
@@ -119,9 +119,9 @@ const GameView = ({ socket }) => {
   return (
     <div className="game-container">
       <div className="game-content">
-        <h1 className="game-title">Juego</h1>
+        <h1 className="game-title">Game:</h1>
         <h3 className="question-title">{currentQuestion.title}</h3>
-        <div className="timer">Tiempo restante: {timer} segundos</div>
+        <div className="timer">Time left: {timer} seconds</div>
         <ul className="options-list">
           {currentQuestion.options.map((option, index) => (
             <button

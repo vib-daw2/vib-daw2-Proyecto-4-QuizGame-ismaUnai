@@ -44,7 +44,7 @@ const WaitingRoom = ({ socket }) => {
     return (
       <div className="error-container">
         <img src="../public/lobby.png" alt="Error" className="error-image" />
-        <h3 className="error-message">No se pudo unir a la partida. Por favor, inténtalo de nuevo.</h3>
+        <h3 className="error-message">Could not join the game. Please try again.</h3>
       </div>
     );
   }
@@ -52,7 +52,7 @@ const WaitingRoom = ({ socket }) => {
   return (
     <div className="waiting-room-container">
       <div className="waiting-room-content">
-        <h3 className="waiting-room-title">Esperando a que el administrador inicie la partida...</h3>
+        <h3 className="waiting-room-title">Waiting for the administrator to start the game...</h3>
         <ul className="players-list">
           {players.map((player, index) => (
             <li key={index}>{player}</li>
