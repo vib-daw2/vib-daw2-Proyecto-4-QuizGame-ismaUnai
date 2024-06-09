@@ -4,10 +4,10 @@ import React from 'react';
 function ReadQuestion({ question }) {
   return (
     <div>
-      <h2>Question Details</h2>
-      <p>Category: {question.category}</p>
-      <p>Title: {question.title}</p>
-      <p>Options:</p>
+      <h2>Detalles de la pregunta</h2>
+      <p>Categorias: {question.category}</p>
+      <p>Titulo: {question.title}</p>
+      <p>Opcoines:</p>
       <ul>
         {question.options.map((option, index) => (
           <li key={index}>{option}</li>

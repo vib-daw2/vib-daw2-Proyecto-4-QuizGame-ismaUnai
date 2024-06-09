@@ -20,7 +20,7 @@ function CreateGame({ socket }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!gameName) {
-      setErrorMessage('Please introduce a party name.');
+      setErrorMessage('Porfavor introduce un nombre a la partida.');
       return;
     }
 
@@ -41,10 +41,10 @@ function CreateGame({ socket }) {
   return (
     <div className="create-game-container">
       <div className="content2">
-        <h1>Party configuration</h1>
+        <h1>Configuración de la partida</h1>
         <form onSubmit={handleSubmit}>
           <label>
-            Party name:
+            Nombre de la partida:
             <input
               type="text"
               value={gameName}
@@ -52,7 +52,7 @@ function CreateGame({ socket }) {
             />
           </label>
           <label>
-            Time for questions (seconds):
+            Tiempo para las preguntas (seconds):
             <select
               value={questionTime}
               onChange={(e) => setQuestionTime(parseInt(e.target.value))}
@@ -63,7 +63,7 @@ function CreateGame({ socket }) {
             </select>
           </label>
           <label>
-            Quantity of questions:
+            Cantidad de preguntas:
             <select
               value={numberOfQuestions}
               onChange={(e) => setNumberOfQuestions(parseInt(e.target.value))}
@@ -77,9 +77,9 @@ function CreateGame({ socket }) {
             </select> 
           </label>
           <label>
-            <p className="Category">Category :</p>
+            <p className="Category">Categoria :</p>
             <div>
-              <span>Sports</span>
+              <span>Deporte</span>
               <input
                 type="checkbox"
                 checked={selectedCategories.includes("Deportes")}
@@ -87,7 +87,7 @@ function CreateGame({ socket }) {
               />
             </div>
             <div>
-              <span>Music</span>
+              <span>Música</span>
               <input
                 type="checkbox"
                 checked={selectedCategories.includes("Música")}
@@ -95,7 +95,7 @@ function CreateGame({ socket }) {
               />
             </div>
             <div>
-              <span>Geografy</span>
+              <span>Geografia</span>
               <input
                 type="checkbox"
                 checked={selectedCategories.includes("Geografía")}
@@ -103,7 +103,7 @@ function CreateGame({ socket }) {
               />
             </div>
             <div>
-              <span>entertainment</span>
+              <span>Entretenimiento</span>
               <input
                 type="checkbox"
                 checked={selectedCategories.includes("Entretenimiento")}
@@ -111,9 +111,9 @@ function CreateGame({ socket }) {
               />
             </div>
           </label>
-          <button type="submit">Save Configuration</button>
+          <button type="submit">Guardar configuración</button>
         </form>
-        <button onClick={handleBack}>GO home</button>
+        <button onClick={handleBack}>Volver inicio</button>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>
     </div>

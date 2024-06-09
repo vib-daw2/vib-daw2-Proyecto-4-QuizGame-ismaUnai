@@ -1,7 +1,6 @@
-
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import "./App.css";
 
 const WaitingRoom = ({ socket }) => {
   const { gamePIN } = useParams();
@@ -12,25 +11,25 @@ const WaitingRoom = ({ socket }) => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    socket.emit('joinRoom', gamePIN, (response) => {
-      if (response.status !== 'success') {
+    socket.emit("joinRoom", gamePIN, (response) => {
+      if (response.status !== "success") {
         setError(true);
       }
     });
 
-    socket.on('playersUpdated', (updatedPlayers) => {
+    socket.on("playersUpdated", (updatedPlayers) => {
       setPlayers(updatedPlayers);
     });
 
-    socket.on('gameStarted', (data) => {
-      console.log('Game started with data:', data);
+    socket.on("gameStarted", (data) => {
+      console.log("Game started with data:", data);
       setGameData(data);
       setGameStarted(true);
     });
 
     return () => {
-      socket.off('playersUpdated');
-      socket.off('gameStarted');
+      socket.off("playersUpdated");
+      socket.off("gameStarted");
     };
   }, [gamePIN, socket]);
 
@@ -44,7 +43,9 @@ const WaitingRoom = ({ socket }) => {
     return (
       <div className="error-container">
         <img src="../public/lobby.png" alt="Error" className="error-image" />
-        <h3 className="error-message">Could not join the game. Please try again.</h3>
+        <h3 className="error-message">
+          No se ha podido entrar en el juego. Intentalo otra vez!
+        </h3>
       </div>
     );
   }
@@ -52,7 +53,9 @@ const WaitingRoom = ({ socket }) => {
   return (
     <div className="waiting-room-container">
       <div className="waiting-room-content">
-        <h3 className="waiting-room-title">Waiting for the administrator to start the game...</h3>
+        <h3 className="waiting-room-title">
+          Esperando al administrador para que comience la partida...
+        </h3>
         <ul className="players-list">
           {players.map((player, index) => (
             <li key={index}>{player}</li>

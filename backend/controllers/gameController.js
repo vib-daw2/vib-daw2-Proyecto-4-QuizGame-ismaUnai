@@ -25,7 +25,7 @@ const gameController = {
       if (!gameName || !questionTime || !numberOfQuestions || !selectedCategories || !PIN) {
         return res.status(400).json({
           status: 'error',
-          message: 'All the fields are required.'
+          message: 'Todos los campos son necesarios.'
         });
       }
 
@@ -47,10 +47,10 @@ const gameController = {
         game
       });
     } catch (error) {
-      console.error('Error to create the game:', error);
+      console.error('Error al crear el juego:', error);
       res.status(500).json({
         status: 'error',
-        message: 'It was not possible to create the game.'
+        message: 'No ha sido posible crear la partida.'
       });
     }
   },
@@ -62,7 +62,7 @@ const gameController = {
       if (!games[PIN]) {
         return res.status(404).json({
           status: 'error',
-          message: 'The game doesnt exist.'
+          message: 'El juego no existe.'
         });
       }
 
@@ -76,10 +76,10 @@ const gameController = {
 
       io.in(PIN).emit('playersUpdated', currentPlayers);
     } catch (error) {
-      console.error('Error to join the game:', error);
+      console.error('Error al unirse a la partida:', error);
       res.status(500).json({
         status: 'error',
-        message: 'Could not join the game.'
+        message: 'No se ha podido unir a la partida.'
       });
     }
   },
@@ -91,7 +91,7 @@ const gameController = {
       if (!games[PIN]) {
         return res.status(404).json({
           status: 'error',
-          message: 'The game dont exist.'
+          message: 'La partida no existe.'
         });
       }
 
@@ -104,13 +104,13 @@ const gameController = {
 
       res.status(200).json({
         status: 'success',
-        message: 'The game has been started.'
+        message: 'La partida ya comenzó .'
       });
     } catch (error) {
-      console.error('Error to start the game:', error);
+      console.error('Error al iniciar el juego:', error);
       res.status(500).json({
         status: 'error',
-        message: 'Could not start the game.'
+        message: 'No se ha podido iniciar el juego.'
       });
     }
   }

@@ -39,7 +39,7 @@ const UpdateQuestion = ({ question, onUpdate, onCancel }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="edit-question-form">
       <div>
         <label>
           Categoría:

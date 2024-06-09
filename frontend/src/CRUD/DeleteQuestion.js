@@ -8,11 +8,11 @@ const DeleteQuestion = ({ questionId, onDelete, onCancel }) => {
       await axios.delete(`http://localhost:4000/api/questions/${questionId}`);
       onDelete(questionId);
     } catch (error) {
-      console.error('Error deleting question:', error);
+      console.error('Error eliminando la pregunta:', error);
     }
   };
 
-  return (
+    return (
     <div className="popup">
       <h2>Eliminar Pregunta</h2>
       <p>¿Estás seguro de que deseas eliminar esta pregunta?</p>

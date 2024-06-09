@@ -30,7 +30,7 @@ const CreateQuestion = ({ onCreate, onCancel }) => {
       }
 
       const response = await axios.post('http://localhost:4000/api/savequestion', formData);
-      console.log('Question saved:', response.data);
+      console.log('Pregunta guardada:', response.data);
       onCreate(response.data.question);
       setFormData({
         category: '',
@@ -40,12 +40,12 @@ const CreateQuestion = ({ onCreate, onCancel }) => {
       });
       onCancel();
     } catch (error) {
-      console.error('Error saving question:', error);
+      console.error('Error guardando la pregunta:', error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="create-question-form">
       <div>
         <label>
           Categoría:
@@ -87,6 +87,6 @@ const CreateQuestion = ({ onCreate, onCancel }) => {
       <button type="button" onClick={onCancel}>Cancelar</button>
     </form>
   );
-};
+}
 
 export default CreateQuestion;

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { FaCopy } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { FaCopy } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import "./App.css";
 
 function Lobby({ socket, gameData }) {
@@ -8,41 +8,45 @@ function Lobby({ socket, gameData }) {
   const [players, setPlayers] = useState([]);
 
   useEffect(() => {
-    socket.on('playersUpdated', (updatedPlayers) => {
+    socket.on("playersUpdated", (updatedPlayers) => {
       setPlayers(updatedPlayers);
     });
 
-    socket.on('gameStarted', () => {
-      navigate(`/game`, { state: { gameData } }); // Pass gameData to GameView
+    socket.on("gameStarted", () => {
+      navigate(`/game`, { state: { gameData } }); 
     });
 
     return () => {
-      socket.off('playersUpdated');
-      socket.off('gameStarted');
+      socket.off("playersUpdated");
+      socket.off("gameStarted");
     };
   }, [socket, navigate, gameData]);
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(gameData.PIN).then(() => {
-      alert('PIN copy successfully');
-    }).catch((err) => {
-      console.error('Error to copy PIN: ', err);
-    });
+    navigator.clipboard
+      .writeText(gameData.PIN)
+      .then(() => {
+        alert("PIN copy successfully");
+      })
+      .catch((err) => {
+        console.error("Error en copiar el PIN: ", err);
+      });
   };
 
+  console.log(players);
   const handleStartGame = () => {
     console.log("gameData:", gameData);
-    console.log('Players:', players);
+    console.log("Players:", players);
 
-    socket.emit('startGame', gameData.PIN);
-    navigate(`/game`, { state: { gameData } }); // Pass gameData to GameView
+    socket.emit("startGame", gameData.PIN);
+    navigate(`/game`, { state: { gameData } }); 
   };
 
   const printGameDetails = () => {
-    console.log('Game details:');
-    console.log('PIN:', gameData.PIN);
-    console.log('Players::', players);
-    console.log('Questions:', gameData.questions);
+    console.log("Game details:");
+    console.log("PIN:", gameData.PIN);
+    console.log("Players:", players);
+    console.log("Questions:", gameData.questions);
   };
 
   return (
@@ -50,17 +54,19 @@ function Lobby({ socket, gameData }) {
       <div className="lobby-content">
         <h1 className="lobby-title">LOBBY - {gameData.PIN}</h1>
         <div className="lobby-details">
-          <button className="copy-button" onClick={copyToClipboard}><FaCopy /></button>
-          <button className="game-details-button" onClick={printGameDetails}>Copy details</button>
+          <button className="copy-button" onClick={copyToClipboard}>
+            <FaCopy />
+          </button>
+          <button className="game-details-button" onClick={printGameDetails}>
+            Copiar detalles
+          </button>
         </div>
-        <h2>Players:</h2>
+        <h2>Jugadores:</h2>
         <ul className="players-list">
           {players.length > 0 ? (
-            players.map((player, index) => (
-              <li key={index}>{player}</li>
-            ))
+            players.map((player, index) => <li key={index}>{player}</li>)
           ) : (
-            <li>There is no players in lobby</li>
+            <li>No hay jugadores en la partida</li>
           )}
         </ul>
         <h2>Preguntas:</h2>
@@ -70,10 +76,12 @@ function Lobby({ socket, gameData }) {
               <li key={index}>{question.title}</li>
             ))
           ) : (
-            <li>There is no questions avaible</li>
+            <li>Las preguntas no estan disponibles</li>
           )}
         </ul>
-        <button className="start-button" onClick={handleStartGame}>Start game</button>
+        <button className="start-button" onClick={handleStartGame}>
+          Comenzar juego
+        </button>
       </div>
     </div>
   );

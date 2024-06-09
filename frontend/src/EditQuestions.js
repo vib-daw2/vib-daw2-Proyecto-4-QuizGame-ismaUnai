@@ -75,15 +75,16 @@ function EditQuestions({ onBack }) {
     setShowUpdateForm(false);
   };
 
+  
   const renderTable = (category) => (
     <table className="questions-table">
       <thead>
         <tr>
-          <th>Category</th>
-          <th>Title</th>
-          <th>Options</th>
-          <th>Corret Answer</th>
-          <th>Actions</th>
+          <th>Categoria</th>
+          <th>TÍtulo</th>
+          <th>Opciones</th>
+          <th>Respuesta correcta</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -131,14 +132,15 @@ function EditQuestions({ onBack }) {
     </table>
   );
 
+
   const handleBack = () => {
     navigate('/');
   };
 
   return (
-    <div>
-      <h1>Edit Questions</h1>
-      <button onClick={() => setShowCreateForm(true)}>Create Questions</button>
+    <div className="edit-questions-container">
+      <h1>EDICIÓN DE PREGUNTAS</h1>
+      <button className="create-question-button" onClick={() => setShowCreateForm(true)}>Crear pregunta</button>
       {showCreateForm && (
         <CreateQuestion
           onCreate={handleCreateQuestion}
@@ -146,15 +148,15 @@ function EditQuestions({ onBack }) {
         />
       )}
       <div className="category-buttons">
-        <button onClick={() => setCurrentCategory('Deportes')}>Sports</button>
-        <button onClick={() => setCurrentCategory('Entretenimiento')}>entertainment</button>
-        <button onClick={() => setCurrentCategory('Geografía')}>Geografy</button>
-        <button onClick={() => setCurrentCategory('Música')}>Music</button>
+        <button onClick={() => setCurrentCategory('Deportes')}>Deporte</button>
+        <button onClick={() => setCurrentCategory('Entretenimiento')}>Entretenimiento</button>
+        <button onClick={() => setCurrentCategory('Geografía')}>Geografia</button>
+        <button onClick={() => setCurrentCategory('Música')}>Musica</button>
       </div>
       <div className="category-table">
         {renderTable(currentCategory)}
       </div>
-      <button onClick={handleBack}>Go home</button>
+      <button className="back-button" onClick={handleBack}>Volver inicio</button>
     </div>
   );
 }

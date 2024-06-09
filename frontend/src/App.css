@@ -80,20 +80,20 @@ display: none;
 /*CREATE GAME CSS*/
 
 .create-game-container {
-  height: 100vh; /* Altura completa del viewport */
-  width: 100vw;  /* Anchura completa del viewport */
-  margin: 0;     /* Sin margen alrededor */
-  padding: 20px; /* Espaciado interno */
-  border-radius: 0; /* Sin bordes redondeados */
+  height: 100vh; 
+  width: 100vw; 
+  margin: 0;    
+  padding: 20px; 
+  border-radius: 0; 
   background-image: url('../public/creategame.png'); 
   background-size: cover; 
   background-position: center; 
   background-repeat: no-repeat; 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra opcional */
-  box-sizing: border-box; /* Incluye padding y borde en el tamaño total del elemento */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  box-sizing: border-box; 
   display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  align-items: center; /* Centra verticalmente */
+  justify-content: center;
+  align-items: center; 
 }
 
 .content2 {
@@ -181,18 +181,18 @@ display: none;
 /* Lobby CSS */
 
 .lobby-container {
-  height: 100vh; /* Altura completa del viewport */
-  width: 100vw;  /* Anchura completa del viewport */
-  margin: 0;     /* Sin margen alrededor */
-  padding: 20px; /* Espaciado interno */
+  height: 100vh;
+  width: 100vw;  
+  margin: 0;     
+  padding: 20px; 
   background-image: url('../public/lobby.png'); 
   background-size: cover; 
   background-position: center; 
   background-repeat: no-repeat; 
-  box-sizing: border-box; /* Incluye padding y borde en el tamaño total del elemento */
+  box-sizing: border-box; 
   display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  align-items: center; /* Centra verticalmente */
+  justify-content: center; 
+  align-items: center; 
 }
 
 .lobby-content {
@@ -243,22 +243,23 @@ display: none;
 /* Podium CSS */
 
 .podium-container {
-  height: 100vh; /* Altura completa del viewport */
-  width: 100vw;  /* Anchura completa del viewport */
-  margin: 0;     /* Sin margen alrededor */
-  padding: 20px; /* Espaciado interno */
+  height: 100vh; 
+  width: 100vw;  
+  margin: 0;    
+  padding: 20px; 
   background-image: url('../public/podio.png'); 
   background-size: cover; 
   background-position: center; 
   background-repeat: no-repeat; 
-  box-sizing: border-box; /* Incluye padding y borde en el tamaño total del elemento */
+  box-sizing: border-box;
   display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  align-items: center; /* Centra verticalmente */
+  justify-content: center; 
+  align-items: center; 
 }
 
 .podium-content {
-  width: 60%;
+  width: 20%;
+  margin-bottom: 20%;
   padding: 20px;
   border: 2px solid #b589e3;
   border-radius: 10px;
@@ -302,18 +303,18 @@ display: none;
 /* Game CSS */
 
 .game-container {
-  height: 100vh; /* Altura completa del viewport */
-  width: 100vw;  /* Anchura completa del viewport */
-  margin: 0;     /* Sin margen alrededor */
-  padding: 20px; /* Espaciado interno */
+  height: 100vh; 
+  width: 100vw;  
+  margin: 0;     
+  padding: 20px;
   background-image: url('../public/game.png'); 
   background-size: cover; 
   background-position: center; 
   background-repeat: no-repeat; 
-  box-sizing: border-box; /* Incluye padding y borde en el tamaño total del elemento */
+  box-sizing: border-box; 
   display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  align-items: center; /* Centra verticalmente */
+  justify-content: center;
+  align-items: center; 
 }
 
 .game-content {
@@ -396,18 +397,18 @@ display: none;
 /* Waiting Room CSS */
 
 .waiting-room-container {
-  height: 100vh; /* Altura completa del viewport */
-  width: 100vw;  /* Anchura completa del viewport */
-  margin: 0;     /* Sin margen alrededor */
-  padding: 20px; /* Espaciado interno */
-  background-image: url('../public/background.png'); 
+  height: 100vh;
+  width: 100vw;  
+  margin: 0;    
+  padding: 20px; 
+  background-image: url('../public/game.png'); 
   background-size: cover; 
   background-position: center; 
   background-repeat: no-repeat; 
-  box-sizing: border-box; /* Incluye padding y borde en el tamaño total del elemento */
+  box-sizing: border-box; 
   display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  align-items: center; /* Centra verticalmente */
+  justify-content: center; 
+  align-items: center; 
 }
 
 .waiting-room-content {
@@ -440,18 +441,18 @@ display: none;
 /* Create Question CSS */
 
 .create-question-container {
-  height: 100vh; /* Altura completa del viewport */
-  width: 100vw;  /* Anchura completa del viewport */
-  margin: 0;     /* Sin margen alrededor */
-  padding: 20px; /* Espaciado interno */
+  height: 100vh;
+  width: 100vw; 
+  margin: 0;     
+  padding: 20px;
   background-image: url('../public/lobby.png'); 
   background-size: cover; 
   background-position: center; 
   background-repeat: no-repeat; 
-  box-sizing: border-box; /* Incluye padding y borde en el tamaño total del elemento */
+  box-sizing: border-box; 
   display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  align-items: center; /* Centra verticalmente */
+  justify-content: center; 
+  align-items: center; 
   flex-direction: column;
 }
 
@@ -632,4 +633,249 @@ display: none;
 .questions-table th, .questions-table td {
   border: 1px solid #ddd;
   padding: 8px;
+}
+
+/* Edit Questions CSS */
+
+.edit-questions-container {
+  height: 100vh;
+  width: 100vw;  
+  margin: 0;    
+  padding: 20px; 
+  background-image: url('../public/lobby.png'); 
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat; 
+  box-sizing: border-box; 
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  overflow-y: auto; 
+}
+
+.edit-questions-container h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.create-question-button,
+.category-buttons button,
+.back-button {
+  font-size: 18px;
+  padding: 10px 20px;
+  background-color: #6309bc;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600; 
+  margin: 10px 5px;
+}
+
+.create-question-button:hover,
+.category-buttons button:hover,
+.back-button:hover {
+  background-color: #7d04ff;
+}
+
+.category-buttons {
+  margin-bottom: 20px;
+}
+
+.category-table {
+  width: 100%;
+  max-width: 1500px;
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+.questions-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.questions-table th,
+.questions-table td {
+  border: 1px solid #b589e3;
+  padding: 10px;
+  text-align: left;
+}
+
+.questions-table th {
+  background-color: #aa64f5;
+  font-size: 18px;
+}
+
+.questions-table td {
+  font-size: 16px;
+}
+
+.questions-table button {
+  font-size: 14px;
+  padding: 5px 10px;
+  background-color: #6309bc;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 2px;
+}
+
+.questions-table button:hover {
+  background-color: #7d04ff;
+}
+
+.questions-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Crear Pregunta CSS */
+
+.create-question-form {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto; 
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid #b589e3;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.create-question-form div {
+  margin-bottom: 20px;
+}
+
+.create-question-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.create-question-form select,
+.create-question-form input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.create-question-form button[type="submit"],
+.create-question-form button[type="button"] {
+  font-size: 18px;
+  padding: 10px 20px;
+  margin: 5px;
+  background-color: #6309bc;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.create-question-form button[type="submit"]:hover,
+.create-question-form button[type="button"]:hover {
+  background-color: #7d04ff;
+}
+
+/* Eliminar Pregunta CSS */
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 400px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid #b589e3;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.popup h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.popup p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.popup button {
+  font-size: 18px;
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #6309bc;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.popup button:hover {
+  background-color: #7d04ff;
+}
+
+/* Editar Pregunta CSS */
+
+.edit-question-form {
+  width: 80%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid #b589e3;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.edit-question-form div {
+  margin-bottom: 15px;
+}
+
+.edit-question-form label {
+  font-size: 18px;
+  font-family: "Nunito Sans", sans-serif;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.edit-question-form input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.edit-question-form button {
+  font-size: 18px;
+  padding: 10px 20px;
+  margin: 10px 5px;
+  background-color: #6309bc;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.edit-question-form button:hover {
+  background-color: #7d04ff;
 }
