@@ -16,7 +16,6 @@ const GameView = ({ socket }) => {
   const gameData = location.state?.gameData;
   const questions = gameData?.questions || [];
   const questionTime = gameData?.questionTime;
-  console.log(gameData, location.state);
   useEffect(() => {
     if (!gameData || !gameData.PIN) {
       setError(true);
